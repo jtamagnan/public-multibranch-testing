@@ -1,0 +1,24 @@
+node {
+  // Checkout the devops-gate to find the defined pipelines
+  stage('Check out devops-gate') {
+    checkout(
+      changelog: false,
+      poll: false,
+      scm: [
+        $class: 'GitSCM',
+        userRemoteConfigs: [[name: 'origin', url: params.DEVOPS_GIT_URL, credentialsId: 'git-ci-key']],
+        branches: [[name: 'master']],
+        extensions: [
+          [$class: 'CloneOption', shallow: false, timeout: 60],
+          [$class: 'RelativeTargetDirectory', relativeTargetDir: 'devops-gate'],
+          [$class: 'WipeWorkspace']
+        ]
+      ]
+    )
+  }
+  for (job in params.jobs.split(",")) {
+    def jobPath = "devops-gate/jenkins/jobs/pipelines/${job}"
+    println("Executing ${jobPath}")
+    load(jobPath)
+  }
+}
