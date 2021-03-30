@@ -1,5 +1,5 @@
 def JOBS = ['blackbox_self_service.groovy']
-def DEVOPS_GATE_URL = https://gitlab.delphix.com/devops/qa-infra.git
+def DEVOPS_GATE_URL = "https://gitlab.delphix.com/devops/qa-infra.git"
 
 node {
   // Checkout the devops-gate to find the defined pipelines
