@@ -1,3 +1,6 @@
+def JOBS = ['blackbox_self_service.groovy']
+def DEVOPS_GATE_URL = https://gitlab.delphix.com/devops/qa-infra.git
+
 node {
   // Checkout the devops-gate to find the defined pipelines
   stage('Check out devops-gate') {
@@ -6,7 +9,7 @@ node {
       poll: false,
       scm: [
         $class: 'GitSCM',
-        userRemoteConfigs: [[name: 'origin', url: params.DEVOPS_GIT_URL, credentialsId: 'git-ci-key']],
+        userRemoteConfigs: [[name: 'origin', url: DEVOPS_GATE_URL, credentialsId: 'git-ci-key']],
         branches: [[name: 'master']],
         extensions: [
           [$class: 'CloneOption', shallow: false, timeout: 60],
@@ -16,7 +19,7 @@ node {
       ]
     )
   }
-  for (job in params.jobs.split(",")) {
+  for (job in JOBS) {
     def jobPath = "devops-gate/jenkins/jobs/pipelines/${job}"
     println("Executing ${jobPath}")
     load(jobPath)
